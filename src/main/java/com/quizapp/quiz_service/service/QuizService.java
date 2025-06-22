@@ -21,10 +21,10 @@ public class QuizService {
     private QuizInterface quizInterface;
 
     public ResponseEntity<String> createQuiz(String category, int numOfQue, String title) {
-        List<Integer> questions = quizInterface.getQuestionForQuiz(category, numOfQue).getBody();
+        List<Integer> questionIds = quizInterface.getQuestionForQuiz(category, numOfQue).getBody();
         Quiz quiz = new Quiz();
         quiz.setTitle(title);
-        quiz.setQuestions(questions);
+        quiz.setQuestions(questionIds);
         quizDao.save(quiz);
         return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED)
                 ;
@@ -34,31 +34,16 @@ public class QuizService {
     public ResponseEntity<List<QuestionWrapper>> getQuestions(Integer quizId) {
 
         Optional<Quiz> quiz = quizDao.findById(quizId);
-//        List<Integer> questionsFromDB = quiz.get().getQuestions();
-        List<QuestionWrapper> questionsForUser = new ArrayList<>();
-//
-//        for (Integer q : questionsFromDB) {
-//            QuestionWrapper qw = new QuestionWrapper(q.getId(), q.getQuestion(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4());
-//            questionsForUser.add(qw);
-//        }
+        List<Integer> questionsIds = quiz.get().getQuestions();
+        ResponseEntity<List<QuestionWrapper>> questionsForUser = quizInterface.getQuestionById(questionsIds);
 
-        return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+        return questionsForUser;
     }
 
     public ResponseEntity<Integer> calculateScore(Integer quizId, List<Response> response) {
 
-//        Quiz quiz = quizDao.findById(quizId).get();
-//        List<Integer> questions=quiz.getQuestions();
-        int right =0;
-//        int i =0;
-//
-//        for (Response res : response){
-//            if(res.getResponse().equals(questions.get(i).getAnswer())){
-//                right++;
-//            }
-//            i++;
-//        }
+        ResponseEntity<Integer> score = quizInterface.getScore(response);
 
-        return  new ResponseEntity<>(right, HttpStatus.OK);
+        return  score;
     }
 }

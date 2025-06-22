@@ -29,7 +29,6 @@ public class QuizController {
 
     @PostMapping("submit/{quizId}")
     public ResponseEntity<Integer> submitQuiz(@PathVariable Integer quizId, @RequestBody List<Response> response){
-//        return new ResponseEntity<>(2,HttpStatus.OK);
         return quizService.calculateScore(quizId,response);
     }
 }
